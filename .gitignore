@@ -25,8 +25,9 @@ gemini_key.txt
 # Large dataset (users download it themselves - see README)
 data/phishing_email.csv
 
-# Trained models (regenerate by running scripts)
+# Trained models — only keep the best one for deployment
 data/*.pkl
+!data/phishing_model_max.pkl
 
 # Generated emails (regenerate by running generator.py)
 data/generated_emails/
