@@ -1,0 +1,51 @@
+SCENARIO: CEO Fraud
+============================================================
+
+In the context of defensive security and awareness training, Business Email Compromise (BEC)—specifically CEO fraud targeting finance personnel—relies heavily on psychological manipulation rather than technical exploits. 
+
+Below is an annotated example of how these communications are typically structured, highlighting the specific red flags and psychological levers used, followed by standard defensive countermeasures.
+
+---
+
+### Annotated Scenario: BEC Wire Fraud Lure
+
+**Sender Display Name:** [Executive Name] `<ceo.executivedept@external-mail-service.com>`  
+*(Red Flag: Display name spoofing; the actual email address is hosted on a free or lookalike/typosquatted external domain rather than the corporate domain.)*
+
+**Subject:** URGENT: Acquisition Settlement - [Target Project Name] - Strictly Confidential  
+*(Red Flag: Creates artificial urgency, implies high stakes, and introduces secrecy to discourage the recipient from discussing it with colleagues.)*
+
+**Body:**
+
+> Hi [Employee Name],
+>
+> Are you at your desk? I need you to handle an urgent and time-sensitive transaction regarding an ongoing acquisition that has reached the closing phase. 
+> 
+> Due to strict non-disclosure obligations, this matter is strictly confidential and must not be discussed with anyone else on the team until the official press release goes out.
+> 
+> I am currently tied up in regulatory meetings and cannot take calls, so please handle this via email for now. We need an initial wire transfer processed before the banking cutoff at 3:00 PM today to ensure the deal closes.
+> 
+> Please let me know once you are ready, and I will forward the wire instructions and invoice details from our legal counsel. 
+> 
+> Best regards,  
+> [Executive Name]  
+> Chief Executive Officer  
+> [Company Name]
+
+---
+
+### Key Red Flags Analyzed
+
+1. **Urgency and Timing Constraints:** Demanding settlement before an impending deadline (e.g., "banking cutoff at 3:00 PM") is designed to bypass careful review and induce panic.
+2. **Channel Isolation:** The sender preemptively cuts off standard verification channels ("currently tied up in meetings and cannot take calls") to force reliance entirely on the compromised or spoofed email thread.
+3. **Mandated Confidentiality:** Instructing the employee not to consult colleagues or supervisors prevents peer verification and exploits organizational hierarchy.
+4. **Multi-Stage Engagement:** Attackers frequently do not attach account details in the initial message; instead, they first confirm the victim's responsiveness to build compliance before sending fraudulent banking information.
+
+---
+
+### Defensive Countermeasures
+
+* **Out-of-Band (OOB) Verification:** Mandate a policy where any request to change banking details or initiate a wire transfer above a specific threshold requires secondary verification via a known, pre-established internal channel (e.g., calling an internal extension, secure internal chat, or in-person confirmation).
+* **Dual Control / Multi-Party Authorization:** Enforce separation of duties within financial systems. A single individual should not be able to initiate and approve an outgoing wire transfer independently.
+* **Email Authentication (SPF, DKIM, DMARC):** Implement a strict DMARC policy (`p=reject`) to prevent unauthorized domains from spoofing the corporate identity directly.
+* **External Sender Warning Banners:** Configure mail gateways to inject clear warnings on incoming emails originating outside the organization, especially when the display name matches an internal executive.

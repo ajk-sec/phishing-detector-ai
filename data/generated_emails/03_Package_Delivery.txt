@@ -1,0 +1,56 @@
+SCENARIO: Package Delivery
+============================================================
+
+Here is an example of an email template commonly used in security awareness and phishing simulation training (e.g., platforms like KnowBe4 or GoPhish) to educate employees on package delivery scams, along with the key indicators used to detect it.
+
+---
+
+### Simulation Template: Delivery Failure Notification
+
+**Sender Display Name:** Express Parcel Support  
+**Sender Address:** `notifications@express-tracking-update[.]com` *(simulated lookalike domain)*  
+**Subject:** Action Required: Delivery Failure – Parcel #US-8921408  
+
+**Body:**
+
+> Dear Customer,  
+>  
+> An attempt was made to deliver your parcel (Tracking ID: **#US-8921408**) on October 24, 2023, at 11:15 AM. The delivery could not be completed due to an incomplete or incorrect recipient address.  
+>  
+> The parcel is currently being held at our local distribution hub. Per company policy, shipments not claimed or updated within **48 hours** will be returned to the sender, and additional storage fees may apply.  
+>  
+> To prevent your parcel from being returned, please review and update your delivery information immediately:  
+>  
+> **[Confirm Your Delivery Address]** *(Placeholder: [LINK])*  
+>  
+> Thank you for choosing Express Logistics.  
+>  
+> *Customer Operations Team*  
+> *Reference: ERR-ADDR-404*  
+
+---
+
+### Key Red Flags & Defensive Analysis
+
+In defensive training, users and automated email analysis filters look for the following characteristics to identify delivery-themed lures:
+
+1. **Artificial Urgency and Penalties:**
+   * Claims that action must be taken within a tight window (e.g., "within 48 hours") or that fees will occur are designed to induce panic and prompt impulsive clicking before verifying the claim.
+
+2. **Generic Greetings:**
+   * Using generic salutations like "Dear Customer" instead of the recipient's actual name, which legitimate couriers tied to an active order typically have.
+
+3. **Mismatched or Lookalike Domains:**
+   * Legitimate courier notifications come from verified official domains (e.g., `@fedex.com`, `@dhl.com`). Attackers often use typo-squatted domains or free webmail accounts.
+
+4. **Ambiguous Tracking Details:**
+   * The notification rarely specifies what the package contains, where it originated, or the exact delivery address attempted, relying instead on generic numbers designed to pique curiosity.
+
+5. **Discrepancy in Hyperlinks:**
+   * In a real attack, hovering over the anchor text or button reveals a destination URL completely unrelated to the official courier’s tracking portal.
+
+### Technical Mitigations
+
+* **DMARC, SPF, and DKIM:** Enforce strict DMARC policies (`p=reject`) to prevent unauthorized senders from directly spoofing brand names.
+* **Link Rewriting/Inspection:** Employ Secure Email Gateways (SEGs) with time-of-click analysis to inspect destination URLs for credential-harvesting mechanisms or malware.
+* **Standard Operating Procedures:** Instruct staff to never click links in unexpected delivery emails; instead, they should manually navigate to the carrier's official website and enter the tracking ID directly.
