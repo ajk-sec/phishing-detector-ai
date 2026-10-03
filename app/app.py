@@ -272,6 +272,25 @@ st.markdown("""
         border: 1px solid rgba(0, 217, 255, 0.15);
         border-radius: 10px;
     }
+    .word-chip {
+        display: inline-block;
+        padding: 0.35rem 0.8rem;
+        margin: 0.25rem;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+    }
+    .word-chip-phishing {
+        background: rgba(255, 107, 138, 0.15);
+        border: 1px solid #ff6b8a;
+        color: #ff8ca6;
+    }
+    .word-chip-safe {
+        background: rgba(142, 255, 183, 0.15);
+        border: 1px solid #8effb7;
+        color: #8effb7;
+    }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
 </style>
@@ -304,6 +323,46 @@ def clean_text(text):
     text = re.sub(r'[^a-z\s]', ' ', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
+
+# ------------------------------------------------------------
+# Feature importance — extract top contributing words
+# ------------------------------------------------------------
+def get_top_features(text, model, vectorizer, top_n=8):
+    """Extract the words that influenced the prediction most."""
+    try:
+        cleaned = clean_text(text)
+        features = vectorizer.transform([cleaned])
+        feature_names = vectorizer.get_feature_names_out()
+        
+        tfidf_values = features.toarray()[0]
+        nonzero_indices = tfidf_values.nonzero()[0]
+        
+        if len(nonzero_indices) == 0:
+            return []
+        
+        coefficients = None
+        if hasattr(model, 'calibrated_classifiers_'):
+            try:
+                coefficients = model.calibrated_classifiers_[0].estimator.coef_[0]
+            except AttributeError:
+                try:
+                    coefficients = model.calibrated_classifiers_[0].base_estimator.coef_[0]
+                except AttributeError:
+                    return []
+        elif hasattr(model, 'coef_'):
+            coefficients = model.coef_[0]
+        else:
+            return []
+        
+        contributions = []
+        for idx in nonzero_indices:
+            contribution = tfidf_values[idx] * coefficients[idx]
+            contributions.append((feature_names[idx], contribution))
+        
+        contributions.sort(key=lambda x: abs(x[1]), reverse=True)
+        return contributions[:top_n]
+    except Exception:
+        return []
 
 # ------------------------------------------------------------
 # Load
@@ -355,14 +414,12 @@ Management"""
 }
 
 # ------------------------------------------------------------
-# INITIALIZE SESSION STATE (must happen BEFORE widgets)
+# INITIALIZE SESSION STATE
 # ------------------------------------------------------------
 if "email_area" not in st.session_state:
     st.session_state.email_area = ""
 if "demo_loaded" not in st.session_state:
     st.session_state.demo_loaded = False
-if "clear_pressed" not in st.session_state:
-    st.session_state.clear_pressed = False
 
 # ------------------------------------------------------------
 # SIDEBAR
@@ -385,7 +442,8 @@ with st.sidebar:
         **Training emails:** `82,486`  
         **Features:** `20,000 TF-IDF`  
         **Vectorizer:** TF-IDF (1-3 grams)  
-        **Text cleaning:** Custom regex pipeline
+        **Text cleaning:** Custom regex pipeline  
+        **Explainability:** Word-level feature importance
         """)
 
     st.markdown("---")
@@ -410,7 +468,7 @@ with st.sidebar:
     st.markdown("[📁 GitHub Repo](https://github.com/ajk-sec/phishing-detector-ai)")
 
 # ------------------------------------------------------------
-# HANDLE DEMO BUTTON CLICKS (set email_area BEFORE the widget renders)
+# HANDLE DEMO BUTTON CLICKS
 # ------------------------------------------------------------
 if ex_phish1:
     st.session_state.email_area = examples["phish1"]
@@ -516,36 +574,25 @@ with col_result:
             probability = model.predict_proba(features)[0]
             confidence = max(probability) * 100
 
+            # Get top contributing words
+            top_features = get_top_features(email_text, model, vectorizer, top_n=10)
+            phishing_words = [w for w, c in top_features if c > 0][:6]
+            safe_words = [w for w, c in top_features if c < 0][:6]
+
             if prediction == 1:
-                st.markdown(f"""
-                <div class="result-card result-phishing">
-                    <span class="result-icon">🚨</span>
-                    <div class="result-title result-title-phishing">PHISHING DETECTED</div>
-                    <div class="result-confidence">{confidence:.1f}%</div>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill confidence-fill-phishing" style="width: {confidence}%;"></div>
-                    </div>
-                    <p class="result-message" style="color: #ff8ca6;">
-                        ⚠️ This email shows strong phishing indicators.<br>
-                        Do not click links or share credentials.
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
+                words_html = ""
+                if phishing_words:
+                    chips = "".join([f'<span class="word-chip word-chip-phishing">{w}</span>' for w in phishing_words])
+                    words_html = f'<div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid rgba(255,45,85,0.3); text-align:center;"><p style="color:#ff8ca6; font-size:0.9rem; margin-bottom:0.6rem; font-weight:600;">⚠️ Suspicious words detected:</p>{chips}</div>'
+
+                st.markdown(f'<div class="result-card result-phishing"><span class="result-icon">🚨</span><div class="result-title result-title-phishing">PHISHING DETECTED</div><div class="result-confidence">{confidence:.1f}%</div><div class="confidence-bar"><div class="confidence-fill confidence-fill-phishing" style="width: {confidence}%;"></div></div><p class="result-message" style="color: #ff8ca6;">⚠️ This email shows strong phishing indicators.<br>Do not click links or share credentials.</p>{words_html}</div>', unsafe_allow_html=True)
             else:
-                st.markdown(f"""
-                <div class="result-card result-safe">
-                    <span class="result-icon">✅</span>
-                    <div class="result-title result-title-safe">EMAIL APPEARS SAFE</div>
-                    <div class="result-confidence">{confidence:.1f}%</div>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill confidence-fill-safe" style="width: {confidence}%;"></div>
-                    </div>
-                    <p class="result-message" style="color: #8effb7;">
-                        ✅ No obvious phishing indicators detected.<br>
-                        Stay vigilant — always verify unexpected requests.
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
+                words_html = ""
+                if safe_words:
+                    chips = "".join([f'<span class="word-chip word-chip-safe">{w}</span>' for w in safe_words])
+                    words_html = f'<div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid rgba(0,255,136,0.3); text-align:center;"><p style="color:#8effb7; font-size:0.9rem; margin-bottom:0.6rem; font-weight:600;">✅ Safe indicators found:</p>{chips}</div>'
+
+                st.markdown(f'<div class="result-card result-safe"><span class="result-icon">✅</span><div class="result-title result-title-safe">EMAIL APPEARS SAFE</div><div class="result-confidence">{confidence:.1f}%</div><div class="confidence-bar"><div class="confidence-fill confidence-fill-safe" style="width: {confidence}%;"></div></div><p class="result-message" style="color: #8effb7;">✅ No obvious phishing indicators detected.<br>Stay vigilant — always verify unexpected requests.</p>{words_html}</div>', unsafe_allow_html=True)
 
             with st.expander("🔬 Technical Details"):
                 st.markdown(f"""
