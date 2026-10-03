@@ -1,6 +1,5 @@
 # ============================================================
 # PHISHING EMAIL DETECTOR — Professional Cyber Dashboard
-# Screenshot-optimized version
 # ============================================================
 
 import streamlit as st
@@ -21,11 +20,10 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------
-# CUSTOM CSS — Dark Cyber Theme (Bigger + Tighter)
+# CUSTOM CSS
 # ------------------------------------------------------------
 st.markdown("""
 <style>
-    /* ---- Global ---- */
     .stApp {
         background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1220 100%);
     }
@@ -45,22 +43,17 @@ st.markdown("""
         font-family: 'Inter', -apple-system, sans-serif;
         font-size: 16px;
     }
-    
-    /* ---- Reduce main container padding ---- */
     .block-container {
-        padding-top: 2rem !important;
+        padding-top: 1.5rem !important;
         padding-bottom: 1rem !important;
-        max-width: 1400px !important;
+        max-width: 1200px !important;
     }
-    
-    /* ---- Headings ---- */
     h1, h2, h3 {
         color: #00d9ff !important;
         text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
     }
-    
     .hero-title {
-        font-size: 3.5rem !important;
+        font-size: 3.2rem !important;
         font-weight: 800 !important;
         background: linear-gradient(135deg, #00d9ff 0%, #7b5cff 100%);
         -webkit-background-clip: text;
@@ -68,25 +61,20 @@ st.markdown("""
         background-clip: text;
         text-shadow: none !important;
         margin-bottom: 0.4rem !important;
-        animation: fadeIn 0.8s ease-in;
         line-height: 1.1 !important;
     }
     .hero-subtitle {
         color: #8b9bb4 !important;
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         margin-bottom: 1.5rem;
-        animation: fadeIn 1s ease-in;
     }
-    
-    /* ---- Badges (BIGGER) ---- */
     .badge {
         display: inline-block;
-        padding: 0.6rem 1.2rem;
+        padding: 0.55rem 1.1rem;
         margin: 0.3rem 0.5rem 0.3rem 0;
-        border-radius: 24px;
-        font-size: 1rem;
+        border-radius: 22px;
+        font-size: 0.95rem;
         font-weight: 600;
-        animation: fadeIn 1.2s ease-in;
     }
     .badge-accuracy {
         background: rgba(0, 255, 136, 0.15);
@@ -103,8 +91,6 @@ st.markdown("""
         color: #b8a5ff;
         border: 1px solid rgba(123, 92, 255, 0.3);
     }
-    
-    /* ---- Text area ---- */
     .stTextArea textarea {
         background-color: rgba(26, 31, 58, 0.7) !important;
         border: 1px solid rgba(0, 217, 255, 0.2) !important;
@@ -112,23 +98,19 @@ st.markdown("""
         border-radius: 12px !important;
         font-size: 1rem !important;
         padding: 1rem !important;
-        transition: all 0.3s ease !important;
     }
     .stTextArea textarea:focus {
         border-color: #00d9ff !important;
         box-shadow: 0 0 20px rgba(0, 217, 255, 0.2) !important;
     }
-    
-    /* ---- Buttons ---- */
     .stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #00d9ff 0%, #7b5cff 100%) !important;
         color: #0a0e27 !important;
         border: none !important;
         border-radius: 12px !important;
-        padding: 0.9rem 2rem !important;
+        padding: 0.85rem 2rem !important;
         font-weight: 700 !important;
         font-size: 1.05rem !important;
-        transition: all 0.3s ease !important;
         box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3) !important;
     }
     .stButton > button[kind="primary"]:hover {
@@ -140,29 +122,25 @@ st.markdown("""
         color: #8b9bb4 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 12px !important;
-        padding: 0.9rem 1.5rem !important;
+        padding: 0.85rem 1.5rem !important;
         font-weight: 600 !important;
         font-size: 1rem !important;
-        transition: all 0.3s ease !important;
     }
     .stButton > button[kind="secondary"]:hover {
         background: rgba(255, 45, 85, 0.15) !important;
         color: #ff6b8a !important;
         border-color: rgba(255, 45, 85, 0.4) !important;
     }
-    
-    /* ---- Sidebar demo buttons ---- */
     [data-testid="stSidebar"] .stButton > button {
         background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(123, 92, 255, 0.15) 100%) !important;
         color: #00d9ff !important;
         border: 1px solid rgba(0, 217, 255, 0.3) !important;
         border-radius: 10px !important;
-        padding: 0.7rem 1rem !important;
+        padding: 0.65rem 1rem !important;
         font-weight: 600 !important;
-        font-size: 0.95rem !important;
+        font-size: 0.92rem !important;
         text-align: left !important;
-        transition: all 0.25s ease !important;
-        margin-bottom: 0.4rem !important;
+        margin-bottom: 0.35rem !important;
     }
     [data-testid="stSidebar"] .stButton > button:hover {
         background: linear-gradient(135deg, rgba(0, 217, 255, 0.3) 0%, rgba(123, 92, 255, 0.3) 100%) !important;
@@ -171,13 +149,10 @@ st.markdown("""
         transform: translateX(4px) !important;
         box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3) !important;
     }
-    
-    /* ---- Result cards ---- */
     .result-card {
         padding: 2.5rem 2rem;
         border-radius: 16px;
         text-align: center;
-        animation: slideIn 0.5s ease-out;
         margin-top: 1rem;
     }
     .result-phishing {
@@ -192,9 +167,9 @@ st.markdown("""
     }
     .result-icon {
         font-size: 4.5rem;
-        margin-bottom: 1rem;
         display: block;
         line-height: 1;
+        margin-bottom: 1rem;
     }
     .result-title {
         font-size: 2rem;
@@ -204,13 +179,13 @@ st.markdown("""
     .result-title-phishing { color: #ff2d55; }
     .result-title-safe { color: #00ff88; }
     .result-confidence {
-        font-size: 3rem;
+        font-size: 2.8rem;
         font-weight: 800;
         margin: 1rem 0;
         color: #e0e6f0;
     }
     .result-message {
-        font-size: 1.05rem;
+        font-size: 1rem;
         margin-top: 1rem;
         font-weight: 500;
     }
@@ -225,7 +200,6 @@ st.markdown("""
     .confidence-fill {
         height: 100%;
         border-radius: 7px;
-        animation: fillBar 1s ease-out;
     }
     .confidence-fill-phishing {
         background: linear-gradient(90deg, #ff2d55 0%, #ff6b8a 100%);
@@ -233,24 +207,17 @@ st.markdown("""
     .confidence-fill-safe {
         background: linear-gradient(90deg, #00ff88 0%, #00d9ff 100%);
     }
-    
-    /* ---- Sidebar ---- */
     [data-testid="stSidebar"] {
         background: rgba(10, 14, 39, 0.95);
         border-right: 1px solid rgba(0, 217, 255, 0.15);
     }
-    [data-testid="stSidebar"] .block-container {
-        padding-top: 1.5rem !important;
-    }
-    
-    /* ---- Info / hint boxes ---- */
     .info-box {
         padding: 1.2rem;
         background: rgba(26, 31, 58, 0.6);
         border-left: 4px solid #00d9ff;
         border-radius: 8px;
         margin-bottom: 1rem;
-        font-size: 1.05rem;
+        font-size: 1.02rem;
     }
     .hint-box {
         padding: 1rem 1.2rem;
@@ -259,7 +226,7 @@ st.markdown("""
         border-radius: 8px;
         margin-bottom: 1rem;
         color: #a5c8e0;
-        font-size: 1rem;
+        font-size: 0.98rem;
     }
     .demo-badge {
         display: inline-block;
@@ -268,12 +235,10 @@ st.markdown("""
         border: 1px solid rgba(255, 193, 7, 0.3);
         border-radius: 8px;
         color: #ffc107;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         font-weight: 600;
         margin-bottom: 0.8rem;
     }
-    
-    /* ---- Model badge ---- */
     .model-badge {
         background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(123, 92, 255, 0.1) 100%);
         border: 1px solid rgba(0, 217, 255, 0.25);
@@ -302,24 +267,10 @@ st.markdown("""
         margin-top: 0.5rem;
         margin-bottom: 0;
     }
-    
-    /* ---- Streamlit expander in sidebar ---- */
     [data-testid="stSidebar"] [data-testid="stExpander"] {
         background: rgba(26, 31, 58, 0.5);
         border: 1px solid rgba(0, 217, 255, 0.15);
         border-radius: 10px;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fillBar {
-        from { width: 0%; }
     }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
@@ -404,12 +355,22 @@ Management"""
 }
 
 # ------------------------------------------------------------
+# INITIALIZE SESSION STATE (must happen BEFORE widgets)
+# ------------------------------------------------------------
+if "email_area" not in st.session_state:
+    st.session_state.email_area = ""
+if "demo_loaded" not in st.session_state:
+    st.session_state.demo_loaded = False
+if "clear_pressed" not in st.session_state:
+    st.session_state.clear_pressed = False
+
+# ------------------------------------------------------------
 # SIDEBAR
 # ------------------------------------------------------------
 with st.sidebar:
     st.markdown("### 🛡️ Cyber Security Toolkit")
     st.markdown("---")
-    
+
     st.markdown(f"""
     <div class="model-badge">
         <p class="label">🎯 Model Accuracy</p>
@@ -417,7 +378,7 @@ with st.sidebar:
         <p class="algorithm">🤖 Linear SVM</p>
     </div>
     """, unsafe_allow_html=True)
-    
+
     with st.expander("📊 Model Details"):
         st.markdown("""
         **Algorithm:** Linear SVM  
@@ -426,64 +387,52 @@ with st.sidebar:
         **Vectorizer:** TF-IDF (1-3 grams)  
         **Text cleaning:** Custom regex pipeline
         """)
-    
+
     st.markdown("---")
     st.markdown("#### 🎯 Sample Emails")
     st.caption("Optional — click any to test:")
-    
+
     st.markdown("**🚨 Phishing Samples:**")
     ex_phish1 = st.button("▶ CEO Fraud Attack", use_container_width=True)
     ex_phish2 = st.button("▶ Password Reset Scam", use_container_width=True)
     ex_phish3 = st.button("▶ Prize Winner Scam", use_container_width=True)
-    
+
     st.markdown("**✅ Safe Samples:**")
     ex_safe1 = st.button("▶ Meeting Reminder", use_container_width=True)
     ex_safe2 = st.button("▶ Report Follow-up", use_container_width=True)
     ex_safe3 = st.button("▶ Team Meeting Note", use_container_width=True)
-    
+
     st.markdown("---")
     random_btn = st.button("🎲 Load Random Sample", use_container_width=True)
-    
+
     st.markdown("---")
     st.markdown("#### 🔗 Links")
     st.markdown("[📁 GitHub Repo](https://github.com/ajk-sec/phishing-detector-ai)")
 
 # ------------------------------------------------------------
-# SESSION STATE
+# HANDLE DEMO BUTTON CLICKS (set email_area BEFORE the widget renders)
 # ------------------------------------------------------------
-if "email_input" not in st.session_state:
-    st.session_state.email_input = ""
-if "demo_loaded" not in st.session_state:
-    st.session_state.demo_loaded = False
-if "clear_triggered" not in st.session_state:
-    st.session_state.clear_triggered = False
-
-if st.session_state.clear_triggered:
-    st.session_state.email_input = ""
-    st.session_state.demo_loaded = False
-    st.session_state.clear_triggered = False
-
 if ex_phish1:
-    st.session_state.email_input = examples["phish1"]
+    st.session_state.email_area = examples["phish1"]
     st.session_state.demo_loaded = True
 elif ex_phish2:
-    st.session_state.email_input = examples["phish2"]
+    st.session_state.email_area = examples["phish2"]
     st.session_state.demo_loaded = True
 elif ex_phish3:
-    st.session_state.email_input = examples["phish3"]
+    st.session_state.email_area = examples["phish3"]
     st.session_state.demo_loaded = True
 elif ex_safe1:
-    st.session_state.email_input = examples["safe1"]
+    st.session_state.email_area = examples["safe1"]
     st.session_state.demo_loaded = True
 elif ex_safe2:
-    st.session_state.email_input = examples["safe2"]
+    st.session_state.email_area = examples["safe2"]
     st.session_state.demo_loaded = True
 elif ex_safe3:
-    st.session_state.email_input = examples["safe3"]
+    st.session_state.email_area = examples["safe3"]
     st.session_state.demo_loaded = True
 elif random_btn:
     random_key = random.choice(list(examples.keys()))
-    st.session_state.email_input = examples[random_key]
+    st.session_state.email_area = examples[random_key]
     st.session_state.demo_loaded = True
 
 # ------------------------------------------------------------
@@ -516,9 +465,12 @@ if model is None:
 # ------------------------------------------------------------
 col_input, col_result = st.columns([1, 1], gap="medium")
 
+# ------------------------------------------------------------
+# INPUT COLUMN
+# ------------------------------------------------------------
 with col_input:
     st.markdown("### 📧 Paste Your Email")
-    
+
     if st.session_state.demo_loaded:
         st.markdown(
             '<div class="demo-badge">📝 Demo email loaded — click Clear or start typing to use your own</div>',
@@ -531,41 +483,39 @@ with col_input:
             That's what this tool tells you. Just paste the email below.
         </div>
         """, unsafe_allow_html=True)
-    
+
     email_text = st.text_area(
         "Email content",
-        value=st.session_state.email_input,
         height=240,
         placeholder="Paste any email here — from your inbox, a suspicious message, or anything you want to check.\n\nYou don't need to know if it's phishing — the AI will tell you.",
         label_visibility="collapsed",
         key="email_area"
     )
-    
-    if st.session_state.demo_loaded and email_text != st.session_state.email_input:
-        if email_text.strip() and not any(email_text.strip() == ex.strip() for ex in examples.values()):
-            st.session_state.demo_loaded = False
-            st.session_state.email_input = email_text
-    
+
     btn_col1, btn_col2 = st.columns([3, 1])
     with btn_col1:
         analyze = st.button("🔍 Analyze Email", use_container_width=True, type="primary")
     with btn_col2:
         if st.button("✖ Clear", use_container_width=True, type="secondary"):
-            st.session_state.clear_triggered = True
+            st.session_state.email_area = ""
+            st.session_state.demo_loaded = False
             st.rerun()
 
+# ------------------------------------------------------------
+# RESULT COLUMN
+# ------------------------------------------------------------
 with col_result:
     st.markdown("### 🎯 Analysis Result")
-    
+
     if analyze and email_text.strip():
         with st.spinner("Analyzing..."):
-            time.sleep(0.4)
+            time.sleep(0.3)
             cleaned = clean_text(email_text)
             features = vectorizer.transform([cleaned])
             prediction = model.predict(features)[0]
             probability = model.predict_proba(features)[0]
             confidence = max(probability) * 100
-            
+
             if prediction == 1:
                 st.markdown(f"""
                 <div class="result-card result-phishing">
@@ -596,7 +546,7 @@ with col_result:
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
-            
+
             with st.expander("🔬 Technical Details"):
                 st.markdown(f"""
                 - **Raw prediction:** `{prediction}` (1 = phishing, 0 = safe)
@@ -604,7 +554,7 @@ with col_result:
                 - **Safe probability:** `{probability[0] * 100:.2f}%`
                 - **Cleaned text length:** `{len(cleaned)}` characters
                 """)
-    
+
     elif analyze:
         st.warning("⚠️ Please paste some email text first.")
     else:
